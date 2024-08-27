@@ -1,9 +1,28 @@
 from locust import FastHttpUser, TaskSet, task
 
 
+class MyUserlesstimeout(FastHttpUser):
+    connection_timeout = 0.2
+    network_timeout = 0.4
+    weight = 2
+
+    @task
+    class taskSet(TaskSet):
+        @task
+        def indexdot5(self):
+            response = None
+
+            try:
+                response = self.client.get("/timeout?timeout=0.3s")
+            except Exception as e:
+                if response != None:
+                    response.failure(e)
+
+
 class MyUser(FastHttpUser):
-    connection_timeout = 0.8
-    network_timeout = 0.8
+    connection_timeout = 0.1
+    network_timeout = 0.6
+    weight = 1
 
     @task
     class taskSet(TaskSet):
